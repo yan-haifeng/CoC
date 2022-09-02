@@ -1,0 +1,25 @@
+server:
+  port: 10086
+
+spring:
+  application:
+    name: nacos
+  cloud:
+    nacos:
+      discovery:
+        # 注册中心
+        server-addr: 36.137.246.93:8848
+        namespace: 87095a02-7d24-4aae-9146-6072b15363fb
+        username: nacos
+        password: haifeng328
+      config:
+        # 配置中心
+        server-addr: 36.137.246.93:8848
+        namespace: 87095a02-7d24-4aae-9146-6072b15363fb
+        username: nacos
+        password: haifeng328
+        file-extension: yaml
+        # 共享配置
+        shared-configs: application.${spring.cloud.nacos.config.file-extension}
+
+
