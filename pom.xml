@@ -6,7 +6,7 @@
 
     <name>CoC</name>
     <modules>
-        <module>CoC-getway</module>
+        <module>CoC-gateway</module>
     </modules>
 
     <groupId>com.example</groupId>
