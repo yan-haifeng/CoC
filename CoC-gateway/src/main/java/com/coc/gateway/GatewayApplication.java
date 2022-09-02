@@ -1,4 +1,4 @@
-package com.coc.getway;
+package com.coc.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class GetWayApplication {
+public class GatewayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GetWayApplication.class, args);
+        SpringApplication.run(GatewayApplication.class, args);
     }
 }

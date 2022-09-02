@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: coc-getway
+    name: coc-gateway
   profiles:
     active: dev
 ---
