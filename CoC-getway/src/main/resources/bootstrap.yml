@@ -3,7 +3,15 @@ server:
 
 spring:
   application:
-    name: nacos
+    name: coc-getway
+  profiles:
+    active: dev
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - dev
   cloud:
     nacos:
       discovery:
@@ -20,6 +28,53 @@ spring:
         password: haifeng328
         file-extension: yaml
         # 共享配置
-        shared-configs: application.${spring.cloud.nacos.config.file-extension}
+        shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - test
+  cloud:
+    nacos:
+      discovery:
+        # 注册中心
+        server-addr: 36.137.246.93:8848
+        namespace: db6a89c3-8d53-45ab-9631-0657892db0df
+        username: nacos
+        password: haifeng328
+      config:
+        # 配置中心
+        server-addr: 36.137.246.93:8848
+        namespace: db6a89c3-8d53-45ab-9631-0657892db0df
+        username: nacos
+        password: haifeng328
+        file-extension: yaml
+        # 共享配置
+        shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  cloud:
+    nacos:
+      discovery:
+        # 注册中心
+        server-addr: 36.137.246.93:8848
+        namespace: e4e66c00-11d2-45be-89f0-e646b8620028
+        username: nacos
+        password: haifeng328
+      config:
+        # 配置中心
+        server-addr: 36.137.246.93:8848
+        namespace: e4e66c00-11d2-45be-89f0-e646b8620028
+        username: nacos
+        password: haifeng328
+        file-extension: yaml
+        # 共享配置
+        shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
 
 
