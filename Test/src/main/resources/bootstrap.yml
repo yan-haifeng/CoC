@@ -1,6 +1,9 @@
+server:
+  port: 10086
+
 spring:
   application:
-    name: coc-gateway
+    name: test
   profiles:
     active: dev
 ---
