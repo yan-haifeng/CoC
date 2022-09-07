@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk
-COPY target/CoC-gateway-0.0.1-SNAPSHOT.jar /home/app/CoC-gateway-0.0.1-SNAPSHOT.jar
+COPY /var/jenkins_home/workspace/CoC-gateway-prod/CoC-gateway/target/CoC-gateway-0.0.1-SNAPSHOT.jar /home/app/CoC-gateway-0.0.1-SNAPSHOT.jar
 ENV LANG=UTF-8
 ENV TZ=Asia/Shanghai
 WORKDIR  /home/app/
