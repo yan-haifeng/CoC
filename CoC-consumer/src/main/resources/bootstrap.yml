@@ -1,9 +1,6 @@
-server:
-  port: 10086
-
 spring:
   application:
-    name: test
+    name: coc-rocketmq
   profiles:
     active: dev
 ---
