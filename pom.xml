@@ -7,7 +7,7 @@
     <name>CoC</name>
     <modules>
         <module>CoC-gateway</module>
-        <module>CoC-consumer</module>
+        <module>CoC-auth</module>
     </modules>
 
     <groupId>com.example</groupId>
@@ -53,9 +53,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-spring-boot-starter</artifactId>
-            <version>2.1.1</version>
+            <groupId>com.example</groupId>
+            <artifactId>CoC-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
