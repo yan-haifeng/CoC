@@ -9,6 +9,7 @@
         <module>CoC-gateway</module>
         <module>CoC-auth</module>
         <module>CoC-business</module>
+        <module>CoC-netty</module>
     </modules>
 
     <groupId>com.coc</groupId>
