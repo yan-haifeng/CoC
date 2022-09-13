@@ -97,7 +97,11 @@
             <artifactId>fluent-mybatis-processor</artifactId>
             <version>1.9.7</version>
         </dependency>
-
+        <!-- netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
