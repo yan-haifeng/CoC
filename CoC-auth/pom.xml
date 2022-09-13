@@ -5,7 +5,7 @@
 
     <parent>
         <artifactId>CoC</artifactId>
-        <groupId>com.example</groupId>
+        <groupId>com.coc</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 

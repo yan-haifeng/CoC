@@ -3,12 +3,8 @@ package com.coc.auth;
 import cn.org.atool.generator.FileGenerator;
 import cn.org.atool.generator.annotation.Table;
 import cn.org.atool.generator.annotation.Tables;
-import com.coc.auth.entity.CocUserEntity;
-import com.coc.auth.mapper.CocUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.annotation.Resource;
 
 @SpringBootTest
 class CoCAuthApplicationTests {
@@ -19,15 +15,6 @@ class CoCAuthApplicationTests {
     static final String username = "root";
     // 数据库密码
     static final String password = "haifeng328";
-
-    @Resource
-    private CocUserMapper cocUserMapper;
-
-    @Test
-    public void test1(){
-        CocUserEntity cocUser = new CocUserEntity().setUserId(1265463241143242L).setUserName("admin").setNickName("admin").setPassword("123123123");
-        cocUserMapper.insert(cocUser);
-    }
 
     @Test
     public void generate() {
