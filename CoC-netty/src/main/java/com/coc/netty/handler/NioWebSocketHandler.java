@@ -14,15 +14,25 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
 
 @Slf4j
+@Component
+@Scope("prototype")
 public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
-
     private WebSocketServerHandshaker handshaker;
+
+    // 连接用户的token
+    private String token;
+
+    @Resource
+    private ChannelSupervise channelSupervise;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -40,20 +50,23 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //添加连接
         log.debug("客户端加入连接："+ctx.channel());
-        ChannelSupervise.addChannel(ctx.channel());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //断开连接
         log.debug("客户端断开连接："+ctx.channel());
-        ChannelSupervise.removeChannel(ctx.channel());
+        channelSupervise.removeChannel(ctx.channel());
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
     }
+
+    /**
+     * 处理websocket客户端的消息
+     * */
     private void handlerWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame){
         // 判断是否关闭链路的指令
         if (frame instanceof CloseWebSocketFrame) {
@@ -78,10 +91,11 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
         TextWebSocketFrame tws = new TextWebSocketFrame(new Date().toString()
                 + ctx.channel().id() + "：" + request);
         // 群发
-        ChannelSupervise.send2All(tws);
+        channelSupervise.send2All(tws);
         // 返回【谁发的发给谁】
         // ctx.channel().writeAndFlush(tws);
     }
+
     /**
      * 唯一的一次http请求，用于创建websocket
      * */
@@ -96,7 +110,7 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
             return;
         }
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-                "ws://localhost:8081/websocket", null, false);
+                "ws://localhost:8888/websocket", null, false);
         handshaker = wsFactory.newHandshaker(req);
         if (handshaker == null) {
             WebSocketServerHandshakerFactory
@@ -104,7 +118,11 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
         } else {
             handshaker.handshake(ctx.channel(), req);
         }
+        // 获取请求头里的token信息
+        token = req.headers().get("Authorization");
+        channelSupervise.addChannel(ctx.channel(), token);
     }
+
     /**
      * 拒绝不合法的请求，并返回错误信息
      * */

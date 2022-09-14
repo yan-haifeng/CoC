@@ -1,4 +1,4 @@
-package com.coc.auth.pojo.domain;
+package com.coc.middleware.pojo.domian;
 
 import lombok.Data;
 
