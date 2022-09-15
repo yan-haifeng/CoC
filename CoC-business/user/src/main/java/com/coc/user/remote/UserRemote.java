@@ -23,4 +23,9 @@ public class UserRemote {
     public UserDto getUserByUserName(@PathVariable String userName){
         return userService.findUserByUserName(userName);
     }
+
+    @GetMapping("/findUserByUserId/{userId}")
+    public UserDto getUserByUserId(@PathVariable Long userId){
+        return userService.findUserByUserId(userId);
+    }
 }

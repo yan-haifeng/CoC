@@ -1,13 +1,13 @@
 package com.coc.netty.supervise;
 
-import com.coc.middleware.pojo.domian.LoginUser;
-import com.coc.middleware.utils.AuthUtils;
+import com.coc.netty.service.MsgService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -15,27 +15,48 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Component
+@Slf4j
 public class ChannelSupervise {
-    private static ChannelGroup GlobalGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    private static ConcurrentMap<String, ChannelId> ChannelMap=new ConcurrentHashMap();
+    private static final ChannelGroup GlobalGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    private static final ConcurrentMap<String, ChannelId> ChannelMap=new ConcurrentHashMap<>();
 
     @Resource
-    private AuthUtils authUtils;
-    public  void addChannel(Channel channel, String token){
+    private MsgService msgService;
+
+    public  void addChannel(Channel channel, Long userId){
         GlobalGroup.add(channel);
-        //获取用户id
-        LoginUser loginUser = authUtils.getLoginUser(token);
         // 添加用户id
-        ChannelMap.put(loginUser.getUser().getUserId().toString(),channel.id());
+        ChannelMap.put(userId.toString(),channel.id());
     }
-    public void removeChannel(Channel channel){
+    public void removeChannel(Channel channel, Long userId){
         GlobalGroup.remove(channel);
-        ChannelMap.remove(channel.id().asShortText());
+        ChannelMap.remove(userId);
     }
     public Channel findChannel(String id){
         return GlobalGroup.find(ChannelMap.get(id));
     }
-    public void send2All(TextWebSocketFrame tws){
+    public void sendAll(TextWebSocketFrame tws){
         GlobalGroup.writeAndFlush(tws);
+        log.info("群发送一条消息" + tws);
+    }
+    public Boolean isActive(String receiveUserId){
+        return !(ChannelMap.get(receiveUserId) == null);
+    }
+
+    /**
+     * 发送消息
+     * @return 用户在线返回1，否则返回0
+     */
+    public int send(TextWebSocketFrame tws, String receiveUserId){
+        // 用户在线直接发送消息
+        if(isActive(receiveUserId)) {
+            // 获得接收人的channel
+            log.info("用户在线:发送一条消息" + tws);
+            Channel channel = this.findChannel(receiveUserId);
+            channel.writeAndFlush(tws);
+            return 1;
+        }
+        // 用户不在线持久化消息
+        return 0;
     }
 }

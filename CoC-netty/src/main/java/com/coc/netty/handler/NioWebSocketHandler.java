@@ -1,6 +1,13 @@
 package com.coc.netty.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.coc.middleware.pojo.domian.LoginUser;
+import com.coc.netty.pojo.dto.MsgDto;
+import com.coc.netty.pojo.vo.MsgVo;
+import com.coc.netty.service.MsgService;
 import com.coc.netty.supervise.ChannelSupervise;
+import com.coc.remote.client.UserClient;
+import com.coc.remote.dto.UserDto;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -18,7 +25,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
 
@@ -27,12 +35,14 @@ import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
 @Scope("prototype")
 public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
     private WebSocketServerHandshaker handshaker;
-
-    // 连接用户的token
-    private String token;
-
     @Resource
     private ChannelSupervise channelSupervise;
+    @Resource
+    private MsgService msgService;
+    @Resource
+    private UserClient userClient;
+
+    private LoginUser loginUser;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -56,7 +66,7 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //断开连接
         log.debug("客户端断开连接："+ctx.channel());
-        channelSupervise.removeChannel(ctx.channel());
+        channelSupervise.removeChannel(ctx.channel(), loginUser.getUser().getUserId());
     }
 
     @Override
@@ -85,15 +95,27 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
             throw new UnsupportedOperationException(String.format(
                     "%s frame types not supported", frame.getClass().getName()));
         }
-        // 返回应答消息
-        String request = ((TextWebSocketFrame) frame).text();
-        log.debug("服务端收到：" + request);
-        TextWebSocketFrame tws = new TextWebSocketFrame(new Date().toString()
-                + ctx.channel().id() + "：" + request);
+        // 获得客户端发送的消息
+        String text = ((TextWebSocketFrame) frame).text();
+        MsgDto msgDto = JSON.parseObject(text, MsgDto.class);
+        log.debug("服务端收到：" + msgDto);
+
+        // 处理返回的消息
+        MsgVo msgVo = msgService.parseMsg(msgDto, loginUser.getUser().getNickName());
+        TextWebSocketFrame tws = new TextWebSocketFrame(JSON.toJSONString(msgVo));
         // 群发
-        channelSupervise.send2All(tws);
-        // 返回【谁发的发给谁】
-        // ctx.channel().writeAndFlush(tws);
+        // channelSupervise.sendAll(tws);
+        // 单发【谁发的发给谁】
+        if(channelSupervise.send(tws, msgDto.getReceiveUserId()) == 0){
+            // 判断用户是否存在
+            UserDto userDto = userClient.getUserByUserId(Long.parseLong(msgDto.getReceiveUserId()));
+            if (userDto != null){
+                log.info("用户不在线：存储一条消息" + tws);
+                msgService.saveMsg(msgDto, loginUser);
+            }else{
+                ctx.channel().writeAndFlush("不存在该用户");
+            }
+        }
     }
 
     /**
@@ -119,8 +141,25 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
             handshaker.handshake(ctx.channel(), req);
         }
         // 获取请求头里的token信息
-        token = req.headers().get("Authorization");
-        channelSupervise.addChannel(ctx.channel(), token);
+        // 连接用户的token
+        String token = req.headers().get("Authorization");
+        try{
+            loginUser = msgService.getLoginUser(token);
+        }catch (RuntimeException e){
+            //不存在该token
+            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND));
+            return;
+        }
+        // 将用户添加到在线管理容器
+        channelSupervise.addChannel(ctx.channel(), loginUser.getUser().getUserId());
+        // 查询该用户在下线时的接收消息
+        Map<Long, List<MsgVo>> msg = msgService.findUnreadMsg(loginUser);
+        if(msg.isEmpty()){
+            return;
+        }
+        TextWebSocketFrame tws = new TextWebSocketFrame(JSON.toJSONString(msg));
+        channelSupervise.send(tws, loginUser.getUser().getUserId().toString());
     }
 
     /**
