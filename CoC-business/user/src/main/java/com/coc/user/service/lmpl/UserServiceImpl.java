@@ -26,4 +26,16 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, dto);
         return dto;
     }
+
+    /**
+     * 根据用户id查询用户信息
+     */
+    @Override
+    public UserDto findUserByUserId(Long userId) {
+        CocUserQuery query = new CocUserQuery().where.userId().eq(userId).end();
+        CocUserEntity user = cocUserMapper.findOne(query);
+        UserDto dto = new UserDto();
+        BeanUtils.copyProperties(user, dto);
+        return dto;
+    }
 }

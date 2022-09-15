@@ -1,15 +1,11 @@
 package com.coc.auth.utils;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import com.coc.auth.constant.JwtConstant;
 import io.jsonwebtoken.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.TemporalUnit;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 public class JwtUtil {
@@ -26,17 +22,13 @@ public class JwtUtil {
     /**
      * 创建jwt
      */
-    public static String createJWT(String id, String subject, long amountToAdd, TemporalUnit unit) {
+    public static String createJWT(String id, Object subject, Date now, Date exp) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-        LocalDateTime nowTime = LocalDateTime.now();
-        LocalDateTime expTime = nowTime.plus(amountToAdd, unit);
-        Date now = Date.from(nowTime.toInstant(ZoneOffset.ofHours(8)));
-        Date exp = Date.from(expTime.toInstant(ZoneOffset.ofHours(8)));
         JwtBuilder builder = Jwts.builder()
                 .setId(id)
                 .setIssuedAt(now)
                 .setIssuer(JwtConstant.ISSUER)
-                .setSubject(subject)
+                .setSubject(subject.toString())
                 .signWith(signatureAlgorithm, generalKey())
                 .setExpiration(exp);
         return builder.compact();

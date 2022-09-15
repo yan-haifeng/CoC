@@ -1,10 +1,10 @@
-server:
-  port: 9091
 spring:
   application:
     name: coc-business-user
   profiles:
     active: dev
+server:
+  port: 9999
 ---
 spring:
   config:

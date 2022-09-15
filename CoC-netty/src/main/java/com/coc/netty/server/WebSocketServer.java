@@ -6,23 +6,21 @@ import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 @Slf4j
-public class WebSocketServer {
-    private final int port;
+@Component
+public class WebSocketServer implements Runnable{
+    @Value("${server.port}")
+    private int port;
 
-    public WebSocketServer(int port) {
-        this.port = port;
-    }
+    @Resource
+    private NioWebSocketChannelInitializer nioWebSocketChannelInitializer;
 
-    public static void main(String[] args) throws Exception {
-
-//        int port = Integer.parseInt(args[0]);
-        int port = 8081;
-        new WebSocketServer(port).start();
-    }
-
-    public void start() throws Exception {
+    public void run() {
         log.info("正在启动websocket服务器");
         NioEventLoopGroup boss=new NioEventLoopGroup();
         NioEventLoopGroup work=new NioEventLoopGroup();
@@ -30,7 +28,7 @@ public class WebSocketServer {
             ServerBootstrap bootstrap=new ServerBootstrap();
             bootstrap.group(boss,work);
             bootstrap.channel(NioServerSocketChannel.class);
-            bootstrap.childHandler(new NioWebSocketChannelInitializer());
+            bootstrap.childHandler(nioWebSocketChannelInitializer);
             Channel channel = bootstrap.bind(port).sync().channel();
             log.info("webSocket服务器启动成功："+channel);
             channel.closeFuture().sync();
