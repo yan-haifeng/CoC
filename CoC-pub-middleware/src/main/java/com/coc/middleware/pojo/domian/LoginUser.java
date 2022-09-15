@@ -1,4 +1,4 @@
-package com.coc.auth.pojo.domain;
+package com.coc.middleware.pojo.domian;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 @Data
-@Accessors(chain = true, fluent = true)
+@Accessors(chain = true)
 public class LoginUser {
 
     /**
