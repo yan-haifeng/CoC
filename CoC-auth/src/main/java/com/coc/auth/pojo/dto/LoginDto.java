@@ -8,9 +8,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-@Accessors(chain = true,fluent = true)
-public class LoginDto {
-
+@Accessors(chain = true)
+public class LoginDto{
 
     /* 用户名 */
     @NotNull(message = "用户名不能为空")
