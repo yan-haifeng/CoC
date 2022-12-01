@@ -13,8 +13,9 @@ public class PasswordUserServiceImpl implements PasswordUserService {
      */
     @Override
     public boolean checkUser(LoginDto loginDto, UserDto userDto){
-        if (loginDto.getPassword() == null || userDto.getPassword() == null)
+        if (loginDto.getPassword() == null || userDto.getPassword() == null) {
             return false;
+        }
         return loginDto.getPassword().equals(userDto.getPassword());
     }
 }

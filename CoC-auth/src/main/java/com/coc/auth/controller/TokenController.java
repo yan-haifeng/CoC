@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.coc.auth.pojo.dto.LoginDto;
 import com.coc.auth.service.TokenService;
 import com.coc.middleware.pojo.domian.LoginUser;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.coc.middleware.utils.R;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.security.auth.login.LoginException;
@@ -24,15 +22,16 @@ public class TokenController {
     /**
      * 登录
      */
+    @CrossOrigin
     @PostMapping("/login")
-    public JSONObject login(@RequestBody @Valid LoginDto dto, HttpServletRequest request) throws LoginException {
-        JSONObject json = new JSONObject();
+    public R login(@RequestBody @Valid LoginDto dto, HttpServletRequest request) throws LoginException {
         LoginUser loginUser = tokenService.login(dto, request);
-
         //获取token
         String token = tokenService.getToken(loginUser);
-        json.put("loginUser", loginUser);
-        json.put("access_token", token);
-        return json;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("loginUser", loginUser);
+        jsonObject.put("access_token", token);
+        return R.ok().data(jsonObject);
     }
+
 }

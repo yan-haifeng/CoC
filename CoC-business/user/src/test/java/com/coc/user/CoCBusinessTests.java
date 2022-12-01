@@ -1,3 +1,5 @@
+package com.coc.user;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,7 +24,7 @@ public class CoCBusinessTests {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
             String request, response;
-            while((request = in.readLine()) != null){
+            while ((request = in.readLine()) != null) {
                 // 客户端发送“Done”才中断处理循环
                 if ("Done".equals(request)) {
                     break;
@@ -37,6 +39,5 @@ public class CoCBusinessTests {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

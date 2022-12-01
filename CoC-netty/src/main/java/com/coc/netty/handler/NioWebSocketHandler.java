@@ -131,8 +131,10 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
                     HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
             return;
         }
+        // 获取请求头里的token信息
+        String token = req.headers().get("Sec-WebSocket-Protocol");
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-                "ws://localhost:8888/websocket", null, false);
+                "ws://localhost:8888/websocket", token, false);
         handshaker = wsFactory.newHandshaker(req);
         if (handshaker == null) {
             WebSocketServerHandshakerFactory
@@ -140,9 +142,6 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
         } else {
             handshaker.handshake(ctx.channel(), req);
         }
-        // 获取请求头里的token信息
-        // 连接用户的token
-        String token = req.headers().get("Authorization");
         try{
             loginUser = msgService.getLoginUser(token);
         }catch (RuntimeException e){

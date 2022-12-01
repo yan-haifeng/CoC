@@ -15,16 +15,16 @@ spring:
     nacos:
       discovery:
         # 注册中心
-        server-addr: 36.137.246.93:8848
-        namespace: 87095a02-7d24-4aae-9146-6072b15363fb
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
         username: nacos
-        password: haifeng328
+        password: 8#",JPEf;iK*14&-
       config:
         # 配置中心
-        server-addr: 36.137.246.93:8848
-        namespace: 87095a02-7d24-4aae-9146-6072b15363fb
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
         username: nacos
-        password: haifeng328
+        password: 8#",JPEf;iK*14&-
         file-extension: yml
         # 共享配置
         shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
@@ -39,16 +39,16 @@ spring:
     nacos:
       discovery:
         # 注册中心
-        server-addr: 36.137.246.93:8848
-        namespace: db6a89c3-8d53-45ab-9631-0657892db0df
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
         username: nacos
-        password: haifeng328
+        password: 8#",JPEf;iK*14&-
       config:
         # 配置中心
-        server-addr: 36.137.246.93:8848
-        namespace: db6a89c3-8d53-45ab-9631-0657892db0df
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
         username: nacos
-        password: haifeng328
+        password: 8#",JPEf;iK*14&-
         file-extension: yml
         # 共享配置
         shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
@@ -62,16 +62,16 @@ spring:
     nacos:
       discovery:
         # 注册中心
-        server-addr: 36.137.246.93:8848
-        namespace: e4e66c00-11d2-45be-89f0-e646b8620028
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
         username: nacos
-        password: haifeng328
+        password: 8#",JPEf;iK*14&-
       config:
         # 配置中心
-        server-addr: 36.137.246.93:8848
-        namespace: e4e66c00-11d2-45be-89f0-e646b8620028
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
         username: nacos
-        password: haifeng328
+        password: 8#",JPEf;iK*14&-
         file-extension: yml
         # 共享配置
         shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

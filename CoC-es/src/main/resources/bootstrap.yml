@@ -1,0 +1,79 @@
+server:
+  port: 9898
+spring:
+  application:
+    name: coc-es
+  profiles:
+    active: dev
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - dev
+  cloud:
+    nacos:
+      discovery:
+        # 注册中心
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
+        username: nacos
+        password: 8#",JPEf;iK*14&-
+      config:
+        # 配置中心
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
+        username: nacos
+        password: 8#",JPEf;iK*14&-
+        file-extension: yml
+        # 共享配置
+        shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - test
+  cloud:
+    nacos:
+      discovery:
+        # 注册中心
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
+        username: nacos
+        password: 8#",JPEf;iK*14&-
+      config:
+        # 配置中心
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
+        username: nacos
+        password: 8#",JPEf;iK*14&-
+        file-extension: yml
+        # 共享配置
+        shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  cloud:
+    nacos:
+      discovery:
+        # 注册中心
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
+        username: nacos
+        password: 8#",JPEf;iK*14&-
+      config:
+        # 配置中心
+        server-addr: 121.196.196.67:8848
+        namespace: f01a9d68-1b7b-4d20-86fa-2dbe888bc963
+        username: nacos
+        password: 8#",JPEf;iK*14&-
+        file-extension: yml
+        # 共享配置
+        shared-configs: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+

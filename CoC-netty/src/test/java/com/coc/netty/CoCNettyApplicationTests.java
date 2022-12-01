@@ -28,11 +28,11 @@ class CoCNettyApplicationTests {
             // 设置entity类生成src目录, 相对于 user.dir
             srcDir = "src/main/java",
             // 设置entity类的package值
-            basePack = "com.coc.netty",
+            basePack = "com.coc.es",
             // 设置dao接口和实现的src目录, 相对于 user.dir
             daoDir = "src/main/java",
             // 设置哪些表要生成Entity文件
-            tables = {@Table(value = {"coc_chart_msg"})}
+            tables = {@Table(value = {"system_employ_job"})}
     )
     static class Empty { //类名随便取, 只是配置定义的一个载体
     }

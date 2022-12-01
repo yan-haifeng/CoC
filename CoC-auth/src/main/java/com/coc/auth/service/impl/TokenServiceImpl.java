@@ -11,15 +11,14 @@ import com.coc.middleware.pojo.domian.User;
 import com.coc.remote.client.UserClient;
 import com.coc.remote.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -68,12 +67,7 @@ public class TokenServiceImpl implements TokenService {
         }
         // 6. 生成LoginUser
         User user = new User();
-        try {
-            BeanUtils.copyProperties(user, userDto);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            log.info("传递参数不正确");
-            throw new LoginException("传递参数不正确");
-        }
+        BeanUtils.copyProperties(userDto, user);
         // 7. 返回LoginUser
         return loginUserService.createLoginUser(user, request);
     }
