@@ -1,5 +1,6 @@
 package com.coc.user.service;
 
+import com.coc.user.pay.core.exception.PayException;
 import com.coc.user.pojo.dto.UserDto;
 
 import java.util.List;
@@ -20,4 +21,9 @@ public interface UserService {
      * 查询所有用户信息
      */
     List<UserDto> findUser();
+
+    /**
+     * 支付Test1
+     */
+    String payTest() throws PayException;
 }

@@ -2,7 +2,11 @@ package com.coc.user.service.lmpl;
 
 import com.coc.user.entity.CocUserEntity;
 import com.coc.user.mapper.CocUserMapper;
+import com.coc.user.pay.core.WeiXPay;
+import com.coc.user.pay.core.domain.PayGoods;
+import com.coc.user.pay.core.domain.PayOrderDTO;
 import com.coc.user.pay.core.domain.WxPayConfig;
+import com.coc.user.pay.core.exception.PayException;
 import com.coc.user.pay.core.factory.PayFactory;
 import com.coc.user.pojo.dto.UserDto;
 import com.coc.user.service.UserService;
@@ -59,11 +63,34 @@ public class UserServiceImpl implements UserService {
         return dtoList;
     }
 
-    public void aa() {
+    @Override
+    public String payTest() throws PayException {
         PayFactory factory = new PayFactory();
-        WxPayConfig wxPayConfig = new WxPayConfig();
-
-        factory.getWxPay();
+        WxPayConfig config = new WxPayConfig();
+        config.setMchID("1623380336");
+        config.setAppID("wxd8179fb45fa501b5");
+        config.setKey("Year95622huangshihan941bdqgtsydh");
+        config.setCertPath("cert/apiclient_cert.p12");
+        config.setPayNotifyUrl("/user/pay/back");
+        WeiXPay wxPay = (WeiXPay) factory.getWxPay(config);
+        PayOrderDTO order = new PayOrderDTO();
+        order.setBody("测试订单1");
+        order.setAmount("1");
+        order.setSubject("测试订单1");
+        order.setOutTradeNo("65483221544886654");
+        order.setPayerClientIp("127.0.0.1");
+        List<PayGoods> goodsList = new ArrayList<>();
+        PayGoods goods = PayGoods.builder()
+                .goodsId("001")
+                .wxPayGoodsId("001")
+                .goodsCategory("box")
+                .goodsName("纸箱")
+                .quantity("1")
+                .price("1")
+                .build();
+        goodsList.add(goods);
+        order.setGoodsDetail(goodsList);
+        return wxPay.getPcPay(order).payment();
     }
 
 }

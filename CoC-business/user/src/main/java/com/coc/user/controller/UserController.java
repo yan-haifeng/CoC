@@ -19,4 +19,11 @@ public class UserController {
     public R getUserList(){
         return R.ok().data(userService.findUser());
     }
+
+    @CrossOrigin
+    @GetMapping("/pay/back")
+    public String payBack() {
+        System.out.println("支付成功");
+        return "success";
+    }
 }
